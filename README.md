@@ -76,9 +76,10 @@ python bin/train_and_evaluate_model.py \
     --dataset DATASET_NAME
     --model_type MODEL_TYPE \
     --feature_type FEATURE_TYPE \
-    --optimized_hyperparameters True|False \
-
+    --optimized_hyperparameters True|False
 ```
+
+If one would like to compute compound representations on the fly, the `--use_precomputed` flag should be set to `False`. Note only standard cheminformatics and mol2vec are computable in this environment, i.e. `megamolbart`, `molformer`, `bartsmiles` and `grover` features can only be used with the default `--use_precomputed False`.
 
 ### Examples
 
