@@ -70,8 +70,8 @@ def get_args():
     parser.add_argument(
         "--feature_type",
         type=str,
-        default="molformer",
-        help="Type of features to use (e.g., rdkit_desc, ecfp4, etc.)"
+        default="rdkit_desc.ecfp4",
+        help="Type of features to use (e.g., rdkit_desc, ecfp4, or a combination: rdkit_desc.megamolbart)"
     )
     parser.add_argument(
         "--optimized_hyperparameters",
@@ -82,7 +82,7 @@ def get_args():
     parser.add_argument(
         "--use_precomputed",
         type=bool,
-        default="True",
+        default="False",
         help="Whether to use pre-computed features or compute them anew. Note this is only implemented for standard cheminformatics features, the deep learning ones need to be loaded"
     )
     return parser.parse_args()
@@ -128,20 +128,20 @@ def check_inputs(feature_type, use_precomputed):
 def load_precomputed_features(base_path, feature_type, dataset):
     all_train_data = []
     all_test_data = []
-    for ff in feature_type.split('.'):
-        train_features = pd.read_csv(os.path.join(base_path, 'data', dataset, 'features', 'train', f'{feature_type}.csv'))
-        val_features = pd.read_csv(os.path.join(base_path, 'data', dataset, 'features', 'val', f'{feature_type}.csv'))
-        test_features = pd.read_csv(os.path.join(base_path, 'data', dataset, 'features', 'test', f'{feature_type}.csv'))
+    for ft in feature_type.split('.'):
+        train_features = pd.read_csv(os.path.join(base_path, 'data', dataset, 'features', 'train', f'{ft}.csv'))
+        val_features = pd.read_csv(os.path.join(base_path, 'data', dataset, 'features', 'val', f'{ft}.csv'))
+        test_features = pd.read_csv(os.path.join(base_path, 'data', dataset, 'features', 'test', f'{ft}.csv'))
         train_val_features = pd.concat((train_features, val_features), axis=0)
 
-    if args.feature_type not in FINGERPRINT_FEATURES:
-        scaler = RobustScaler()
-        train_data, test_data = process_features(train_val_features, test_features, dataset, scaler)
-    else:
-        train_data, test_data = process_features(train_val_features, test_features, dataset)
+        if args.feature_type not in FINGERPRINT_FEATURES:
+            scaler = RobustScaler()
+            train_data, test_data = process_features(train_val_features, test_features, dataset, scaler)
+        else:
+            train_data, test_data = process_features(train_val_features, test_features, dataset)
 
-    all_train_data.append(train_data)
-    all_test_data.append(test_data)
+        all_train_data.append(train_data)
+        all_test_data.append(test_data)
 
     final_train_data = {
         'smiles': list(train_df['smiles']),
@@ -149,7 +149,12 @@ def load_precomputed_features(base_path, feature_type, dataset):
         'values': all_train_data[0]['values'],
     }
 
-    final_test_data = {'smiles': list(test_df['smiles']), 'features': np.hstack([ff['features'] for ff in all_test_data]), 'values': all_test_data[0]['values']}
+    final_test_data = {
+        'smiles': list(test_df['smiles']), 
+        'features': np.hstack([ff['features'] for ff in all_test_data]), 
+        'values': all_test_data[0]['values']
+    }
+
     return final_train_data, final_test_data
 
 
@@ -201,10 +206,13 @@ if __name__ == "__main__":
         with open(config_path, 'r') as f:
             hp = json.load(f)[dataset]
 
-    train_and_evaluate_model(
+    metrics = train_and_evaluate_model(
         task_type=task_type,
         model_type=model_type,
         train_data=final_train_data,
         test_data=final_test_data,
         hyperparameters=hp
     )
+
+    for m, v in metrics.items():
+        print(m, ':', v)

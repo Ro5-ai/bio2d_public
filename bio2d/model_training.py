@@ -81,4 +81,6 @@ def train_and_evaluate_model(
         else:
             y_pred = model_prediction(model, task_type, test_data['features'])
         scores = scorer(y_pred, test_data['values'], task_type, iqr=train_iqr)
-        print(scores)
+        return scores
+
+    return None
