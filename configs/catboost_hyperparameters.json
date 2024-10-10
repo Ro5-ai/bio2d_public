@@ -1,0 +1,177 @@
+{
+  "nih_solubility": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "0",
+    "l2_leaf_reg": "7"
+  },
+  "hlm": {
+    "depth": "6",
+    "learning_rate": "0.1",
+    "iterations": "2000",
+    "bagging_temperature": "1",
+    "l2_leaf_reg": "1"
+  },
+  "mdr1-mdck": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "0",
+    "l2_leaf_reg": "7"
+  },
+  "solubility": {
+    "depth": "4",
+    "learning_rate": "0.3",
+    "iterations": "1000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "5"
+  },
+  "rlm": {
+    "depth": "4",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "5",
+    "l2_leaf_reg": "3"
+  },
+  "lipophilicity": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  },
+  "ppbr_az": {
+    "depth": "4",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "5",
+    "l2_leaf_reg": "3"
+  },
+  "vdss_lombardo": {
+    "depth": "8",
+    "learning_rate": "0.01",
+    "iterations": "2000",
+    "bagging_temperature": "1",
+    "l2_leaf_reg": "5"
+  },
+  "half_life_obach": {
+    "depth": "6",
+    "learning_rate": "0.01",
+    "iterations": "2000",
+    "bagging_temperature": "1",
+    "l2_leaf_reg": "5"
+  },
+  "clearance_microsome_az": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  },
+  "ld50_zhu": {
+    "depth": "10",
+    "learning_rate": "0.05",
+    "iterations": "1000",
+    "bagging_temperature": "5",
+    "l2_leaf_reg": "7"
+  },
+  "caco2_wang": {
+    "depth": "6",
+    "learning_rate": "0.01",
+    "iterations": "2000",
+    "bagging_temperature": "1",
+    "l2_leaf_reg": "5"
+  },
+  "hia_hou": {
+    "depth": "8",
+    "learning_rate": "0.3",
+    "iterations": "1000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  },
+  "pgp_broccatelli": {
+    "depth": "8",
+    "learning_rate": "0.3",
+    "iterations": "1000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  },
+  "bioavailability_ma": {
+    "depth": "4",
+    "learning_rate": "0.1",
+    "iterations": "500",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "5"
+  },
+  "bbb_martins": {
+    "depth": "10",
+    "learning_rate": "0.05",
+    "iterations": "1000",
+    "bagging_temperature": "5",
+    "l2_leaf_reg": "7"
+  },
+  "cyp2d6_veith": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "0",
+    "l2_leaf_reg": "7"
+  },
+  "cyp3a4_veith": {
+    "depth": "4",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "5",
+    "l2_leaf_reg": "3"
+  },
+  "cyp2c9_veith": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "0",
+    "l2_leaf_reg": "7"
+  },
+  "cyp2d6_substrate_carbonmangels": {
+    "depth": "6",
+    "learning_rate": "0.01",
+    "iterations": "2000",
+    "bagging_temperature": "1",
+    "l2_leaf_reg": "5"
+  },
+  "cyp3a4_substrate_carbonmangels": {
+    "depth": "8",
+    "learning_rate": "0.05",
+    "iterations": "2000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  },
+  "cyp2c9_substrate_carbonmangels": {
+    "depth": "10",
+    "learning_rate": "0.3",
+    "iterations": "2000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  },
+  "herg": {
+    "depth": "10",
+    "learning_rate": "0.1",
+    "iterations": "1000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "7"
+  },
+  "ames": {
+    "depth": "10",
+    "learning_rate": "0.1",
+    "iterations": "1000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "7"
+  },
+  "dili": {
+    "depth": "10",
+    "learning_rate": "0.3",
+    "iterations": "2000",
+    "bagging_temperature": "3",
+    "l2_leaf_reg": "3"
+  }
+}
