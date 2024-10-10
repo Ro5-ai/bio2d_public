@@ -62,7 +62,7 @@ This script trains and evaluates a machine learning model for an ADMET dataset b
 - `--model_type`: Type of machine learning model to use.
   - Choices: `random_forest`, `lightgbm`, `support_vector_machine`, `catboost`, `mpnn`
 - `--feature_type`: Type of molecular feature representation.
-  - Choices: `atom_pair`, `ecfp2`, `rdkit_desc`, `mordred`, `maccs_keys`, `erg`, `avalon`, `mol2vec`, `megamolbart`, `bartsmiles`, `grover`, `molformer`
+  - Choices: `atom_pair`, `ecfp4`, `rdkit_desc`, `mordred`, `maccs_keys`, `erg`, `avalon`, `mol2vec`, `megamolbart`, `bartsmiles`, `grover`, `molformer`
 - `--optimized_hyperparameters`: Whether to use optimized hyperparameters (specifically for `CatBoost`).
   - Choices: `True`, `False`
 - `--use_precomputed`: Whether to use pre-computed features or compute them anew. Note this is only implemented for standard cheminformatics features, the deep learning ones need to be loaded (i.e. use_precomputed = True).
