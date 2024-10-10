@@ -17,7 +17,7 @@ This codebase allows you to train and evaluate machine learning models for predi
 
 ### Prerequisites
 
-- Python 3.9 installed on your system.
+- Conda (or Miniconda) installed in your system.
 
 ### Steps
 
