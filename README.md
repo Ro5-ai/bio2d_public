@@ -22,25 +22,25 @@ This codebase allows you to train and evaluate machine learning models for predi
 
 1. **Clone the repository**
 
-   ```bash
+```bash
 git clone https://github.com/2dbio_public.git
 cd bio2d_public
-   ```
+```
 
 2. **Download data**
 
-   ```bash
+```bash
 wget https://ro5-public.s3.amazonaws.com/admet_datasets.zip
 unzip admet_datasets.zip
-   ```
+```
 
 3. **Set up the Virtual Environment**
 
-   ```bash
+```bash
 conda create -n b2d python=3.9
 conda activate b2d
 pip install -e .
-   ```
+```
 
 ## Usage
 
