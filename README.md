@@ -1,5 +1,4 @@
-
-# Benchmarking ML in ADMET Predictions
+open('README.md','w', encoding='utf-8').write('# Benchmarking ML in ADMET Predictions
 
 This repository contains the code accompanying the paper:
 
@@ -17,104 +16,168 @@ This codebase allows you to train and evaluate machine learning models for predi
 
 ### Prerequisites
 
-- Conda (or Miniconda) installed in your system.
+- Conda (or Miniconda) installed on your system.
 
 ### Steps
 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/2dbio_public.git
-   cd 2dbio_public
+git clone https://github.com/2dbio_public.git
+cd bio2d_public
    ```
 
 2. **Download data**
 
    ```bash
-   wget https://ro5-public.s3.amazonaws.com/admet_datasets.zip
-   unzip admet_datasets.zip
+wget https://ro5-public.s3.amazonaws.com/admet_datasets.zip
+unzip admet_datasets.zip
    ```
 
-2. **Virtual environment**
+3. **Set up the Virtual Environment**
 
    ```bash
-   conda create -n b2d python=3.9
-   conda activate b2d
-   pip install -e .
+conda create -n b2d python=3.9
+conda activate b2d
+pip install -e .
    ```
 
-
 ## Usage
+
+This repository contains several scripts that allow you to train and evaluate models in different scenarios. Below are instructions for the two main scripts.
+
+---
 
 ### Script: `bin/train_and_evaluate_model.py`
 
 This script trains and evaluates a machine learning model for an ADMET dataset based on your chosen parameters.
 
-### Command-Line Arguments
+#### Command-Line Arguments
 
-- `--dataset`: The dataset to be used for training and evaluation.
-  - Choices: `bioavailability_ma`, `hia_hou`, `pgp_broccatelli`, `bbb_martins`, 
-    `cyp2c9_veith`, `cyp2d6_veith`, `cyp3a4_veith`, `cyp2c9_substrate_carbonmangels`, 
-    `cyp2d6_substrate_carbonmangels`, `cyp3a4_substrate_carbonmangels`, `herg`, 
-    `ames`, `dili`, `caco2_wang`, `lipophilicity`, `ppbr_az`, `ld50_zhu`, 
-    `vdss_lombardo`, `half_life_obach`, `clearance_microsome_az`, `nih_solubility`, 
-    `rlm`, `solubility`, `hlm`, `mdr1-mdck`
-- `--model_type`: Type of machine learning model to use.
-  - Choices: `random_forest`, `lightgbm`, `support_vector_machine`, `catboost`, `mpnn`
-- `--feature_type`: Type of molecular feature representation.
-  - Choices: `atom_pair`, `ecfp4`, `rdkit_desc`, `mordred`, `maccs_keys`, `erg`, `avalon`, `mol2vec`, `megamolbart`, `bartsmiles`, `grover`, `molformer`
-- `--optimized_hyperparameters`: Whether to use optimized hyperparameters (specifically for `CatBoost`).
-  - Choices: `True`, `False`
-- `--use_precomputed`: Whether to use pre-computed features or compute them anew. Note this is only implemented for standard cheminformatics features, the deep learning ones need to be loaded (i.e. use_precomputed = True).
-  - Choices: `True`, `False`
+- **`--dataset`**: The dataset to be used for training and evaluation.  
+  *Choices:* `bioavailability_ma`, `hia_hou`, `pgp_broccatelli`, `bbb_martins`, `cyp2c9_veith`, `cyp2d6_veith`, `cyp3a4_veith`, `cyp2c9_substrate_carbonmangels`, `cyp2d6_substrate_carbonmangels`, `cyp3a4_substrate_carbonmangels`, `herg`, `ames`, `dili`, `caco2_wang`, `lipophilicity`, `ppbr_az`, `ld50_zhu`, `vdss_lombardo`, `half_life_obach`, `clearance_microsome_az`, `nih_solubility`, `rlm`, `solubility`, `hlm`, `mdr1-mdck`
 
+- **`--model_type`**: Type of machine learning model to use.  
+  *Choices:* `random_forest`, `lightgbm`, `support_vector_machine`, `catboost`, `mpnn`
 
-### Basic Usage
+- **`--feature_type`**: Type of molecular feature representation.  
+  *Choices:* `atom_pair`, `ecfp4`, `rdkit_desc`, `mordred`, `maccs_keys`, `erg`, `avalon`, `mol2vec`, `megamolbart`, `bartsmiles`, `grover`, `molformer`
+
+- **`--optimized_hyperparameters`**: Whether to use optimized hyperparameters (specifically for CatBoost).  
+  *Choices:* `True`, `False`
+
+- **`--use_precomputed`**: Whether to use pre-computed features or compute them anew.  
+  Note: Only standard cheminformatics features can be computed on the fly; deep learning-based representations (e.g. `megamolbart`, `molformer`, `bartsmiles`, `grover`) must be precomputed.  
+  *Choices:* `True`, `False`
+
+#### Basic Usage Example
 
 ```bash
-python bin/train_and_evaluate_model.py \
-    --dataset DATASET_NAME
-    --model_type MODEL_TYPE \
-    --feature_type FEATURE_TYPE \
-    --optimized_hyperparameters True|False
+python bin/train_and_evaluate_model.py \ 
+    --dataset DATASET_NAME \ 
+    --model_type MODEL_TYPE \ 
+    --feature_type FEATURE_TYPE \ 
+    --optimized_hyperparameters True
 ```
 
-If one would like to compute compound representations on the fly, the `--use_precomputed` flag should be set to `False`. Note only standard cheminformatics and mol2vec are computable in this environment, i.e. `megamolbart`, `molformer`, `bartsmiles` and `grover` features can only be used with the default `--use_precomputed False`.
+For example, to run CatBoost with rdkit_desc features using unoptimized hyperparameters:
 
-### Examples
+```bash
+python bin/train_and_evaluate_model.py \ 
+    --dataset bbb_martins \ 
+    --model_type catboost \ 
+    --feature_type rdkit_desc.ecfp4 \ 
+    --optimized_hyperparameters False
+```
 
-- **CatBoost with rdkit_desc features with unoptimized hyperparameters**
+---
 
-  ```bash
-  python bin/train_and_evaluate_model.py \
-      --dataset bbb_martins \
-      --model_type catboost \
-      --feature_type rdkit_desc.ecfp4 \
-      --optimized_hyperparameters False
-  ```
+### Script: `domain_adaptation.py`
 
-- **CatBoost with rdkit_desc + ecfp4 + avalon + erg features with optimized hyperparameters**
+This script is designed to perform domain adaptation experiments by training a model on source data and adapting it to a different domain. In addition to standard adaptation methods (e.g., `TrAdaBoostR2`, `KMM`, `KLIEP`), two additional adapter methods—**CombinedDataAdapter** and **ContinuedTrainingAdapter**—are provided.
 
-  ```bash
-  python bin/train_and_evaluate_model.py \
-      --dataset ames \
-      --model_type catboost \
-      --feature_type rdkit_desc.ecfp4.avalon.erg \
-      --optimized_hyperparameters True
-  ```
+#### Command-Line Arguments
 
-- **MPNN with megamolbart features**
+- **`--source_data_path`**: Path to the source dataset pickle file.  
+  *(Default: `/home/ubuntu/bio2d_public/data/clean_nih_sol_fp.pkl`)*
 
-  ```bash
-  python bin/train_and_evaluate_model.py \
-      --dataset lipophilicity \
-      --model_type mpnn \
-      --feature_type megamolbart \
-      --optimized_hyperparameters False
-  ```
-### Notes
+- **`--domain_data_path`**: Path to the domain dataset pickle file.  
+  *(Default: `/home/ubuntu/bio2d_public/data/clean_biogen_sol_fp.pkl`)*
 
-- Ensure all required datasets and resources are available in the appropriate directories.
-- The model training outputs basic performance metrics, including:
-    - **For Binary Classification**: accuracy (`acc`), F1 score (`f1`), recall (`recall`), precision (`precision`), ROC-AUC (`rocauc`), and area under the precision-recall curve (`auprc`).
-    - **For Regression**: Pearson correlation (`pearson`), Spearman correlation (`spearman`), root mean square qrror (`rmse`), mean absolute error (`mae`), and normalized RMSE (`nrmse`).
+- **`--output_path`**: Full path for the output CSV file. If not provided, the script automatically generates a default name based on key input parameters.
+
+- **`--output_folder`**: Folder in which to save the output CSV when `--output_path` is not specified.  
+  *(Default: `./output`)*
+
+- **`--dataset_name`**: Dataset name used to load the configuration (e.g., `solubility`, `hppb`, `hlm`).
+
+- **`--adaptation_method`**: The adaptation method to use.  
+  *Options:* `TrAdaBoostR2`, `TwoStageTrAdaBoostR2`, `NearestNeighborsWeighting`, `KMM`, `KLIEP`, `CombinedDataAdapter`, `ContinuedTrainingAdapter`
+
+- **`--num_fractions`**: Number of fractions into which the domain training set is divided.  
+  *(Default: `10`)*
+
+- **`--num_scaffold_splits`**: Number of scaffold splits to generate from the domain dataset.  
+  *(Default: `5`)*
+
+- **`--num_processes`**: Number of processes to use for parallel training.  
+  *(Default: `4`)*
+
+- **Adapter-Specific Hyperparameters:**
+  - **`--adapter_n_estimators`**: Number of estimators for the adaptation method.  
+    *(Default: `10`)*
+  - **`--adapter_random_state`**: Random seed for the adaptation method.  
+    *(Default: `0`)*
+  - **`--additional_iterations`**: Additional iterations for continued training (used only by ContinuedTrainingAdapter).  
+    *(Default: `1000`)*
+
+#### Default Output File Naming
+
+If you do not supply an explicit `--output_path`, the script automatically generates a default file name using the following format:
+
+```
+{dataset_name}_{adaptation_method}_splits{num_scaffold_splits}_iters{iterations}.csv
+```
+
+For example, if you run with:
+- `--dataset_name hppb`
+- `--adaptation_method ContinuedTrainingAdapter`
+- `--num_scaffold_splits 5`
+- And the CatBoost iteration count (from the dataset configuration) is `2000`,
+
+then the default output file name will be:
+
+```
+hppb_ContinuedTrainingAdapter_splits5_iters2000.csv
+```
+
+and the file will be placed in the folder specified by `--output_folder` (defaulting to `./output`).
+
+#### Basic Usage Example
+
+```bash
+python domain_adaptation.py \ 
+    --dataset_name hppb \ 
+    --adaptation_method ContinuedTrainingAdapter \ 
+    --num_scaffold_splits 5 \ 
+    --num_fractions 5 \ 
+    --additional_iterations 1000
+```
+
+This command runs the domain adaptation experiment on the `hppb` dataset using the `ContinuedTrainingAdapter` method with 5 scaffold splits and 5 fractions.
+
+---
+
+## Notes
+
+- **Datasets & Resources:**  
+  Ensure that all required datasets and resources are available in the appropriate directories.
+
+- **Performance Metrics:**  
+  The training outputs include key performance metrics.
+  - *For Binary Classification:* accuracy, F1 score, recall, precision, ROC-AUC, and AU-PRC.
+  - *For Regression:* Pearson and Spearman correlations, RMSE, MAE, and normalized RMSE.
+
+- **Reproducibility:**  
+  Random states and seeds are configurable to help reproduce your results across different runs.
+
