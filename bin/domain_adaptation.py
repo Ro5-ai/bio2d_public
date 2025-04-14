@@ -170,7 +170,7 @@ def get_args():
                         help="Number of fractions into which the domain training set is divided")
     parser.add_argument("--num_scaffold_splits", type=int, default=5,
                         help="Number of scaffold splits to generate from the domain dataset")
-    parser.add_argument("--num_processes", type=int, default=4,
+    parser.add_argument("--num_processes", type=int, default=16,
                         help="Number of processes for parallel training")
     # Adapter-specific hyperparameters.
     parser.add_argument("--adapter_n_estimators", type=int, default=10,
