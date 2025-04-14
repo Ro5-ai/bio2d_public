@@ -52,18 +52,28 @@ def get_scaffold(df, smiles_col):
 def get_scaffold_splits(domain_data, num_splits=5, random_seed=42):
     """
     Generate scaffold-based splits (train/test indices) for domain_data.
+    This version assumes that the output of generate_scaffolds is a list of lists
+    (each inner list contains indices of molecules sharing the same scaffold).
     """
     scaffolds, dataset = get_scaffold(domain_data, 'smiles')
-    scaffolds_df = pd.DataFrame(scaffolds)
-    scaffolds_df['scaffold_group'] = scaffolds_df['idx'].apply(lambda x: dataset.ids[x])
-    scaffolds_df['group_size'] = scaffolds_df['scaffold_group'].apply(len)
+    # Convert scaffold groups from indices to SMILES strings using dataset.ids.
+    scaffold_groups = []
+    for group in scaffolds:
+        # For each scaffold group, gather the corresponding IDs (SMILES strings)
+        group_ids = [dataset.ids[i] for i in group]
+        scaffold_groups.append((group_ids, len(group_ids)))
     
-    scaffold_groups = list(zip(scaffolds_df['scaffold_group'].tolist(), scaffolds_df['group_size'].tolist()))
+    # Build a DataFrame where each row represents a scaffold group
+    import pandas as pd
+    scaffolds_df = pd.DataFrame(scaffold_groups, columns=["scaffold_group", "group_size"])
+
     splits = []
     for split_num in range(num_splits):
+        # Create a reproducible random state for each split.
         rng = np.random.RandomState(random_seed + split_num)
         groups_shuffled = scaffold_groups.copy()
         rng.shuffle(groups_shuffled)
+
         train_groups, test_groups = [], []
         train_count, test_count = 0, 0
         for group, size in groups_shuffled:
@@ -73,20 +83,28 @@ def get_scaffold_splits(domain_data, num_splits=5, random_seed=42):
             else:
                 test_groups.append(group)
                 test_count += size
+
+        # Flatten the list of groups into one Series for train and test.
+        import pandas as pd
         train_idx = pd.Series([item for group in train_groups for item in group])
         test_idx = pd.Series([item for group in test_groups for item in group])
         splits.append((train_idx, test_idx))
+    
     return splits
 
+
 def get_domain_data_split(domain_data, data_indices, idx_number):
-    """Get the domain data split (train/test) according to provided indices."""
+    """Get the domain data splits according to provided indices."""
     if idx_number == 0:
-        # For split 0, use scaffold split with a 50/50 partition.
+        # For split 0, use scaffold splitting with a 50/50 partition.
         domain_data_train, domain_data_test = split_by_scaffold(domain_data[['label', 'smiles']], 'smiles', frac_train=0.50)
         domain_data_train = pd.merge(domain_data_train, domain_data, how='left', on='smiles')
         domain_data_test = pd.merge(domain_data_test, domain_data, how='left', on='smiles')
     else:
-        train_smi = [element for lst in data_indices[idx_number] for element in lst]
+        # Here we assume that data_indices[idx_number] is a tuple (train_idx, test_idx)
+        train_smi = data_indices[idx_number][0]  # Train SMILES from the tuple.
+        test_smi  = data_indices[idx_number][1]  # Test SMILES from the tuple.
         domain_data_train = domain_data[domain_data['smiles'].isin(train_smi)].copy().reset_index(drop=True)
-        domain_data_test = domain_data[~domain_data['smiles'].isin(train_smi)].copy().reset_index(drop=True)
+        domain_data_test = domain_data[domain_data['smiles'].isin(test_smi)].copy().reset_index(drop=True)
     return domain_data_train, domain_data_test
+
