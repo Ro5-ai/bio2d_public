@@ -196,7 +196,7 @@ if __name__ == "__main__":
         os.makedirs(output_folder, exist_ok=True)
         args.output_path = os.path.join(
             output_folder,
-            f"{args.dataset_name}_{args.adaptation_method}_scaf{args.num_scaffold_splits}.csv"
+            f"{args.dataset_name}_{args.adaptation_method}_scaf{args.num_scaffold_splits}_frac{args.num_fractions}.csv"
         )
 
     source_data = pd.read_pickle(os.path.join(args.data_folder, dataset_config['source_file_name']))
