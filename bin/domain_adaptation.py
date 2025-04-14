@@ -64,6 +64,21 @@ class ContinuedTrainingAdapter:
     def predict(self, X):
         return self.reg.predict(X)
 
+class TargetOnlyDataAdapter:
+    """
+    An adapter that trains using only the target (domain) training data.
+    For fraction_index==1 we return a placeholder result because there is insufficient data.
+    """
+    def __init__(self, reg, **kwargs):
+        self.reg = reg
+
+    def fit(self, Xt, yt):
+        self.reg.fit(Xt, yt)
+        return self
+
+    def predict(self, X):
+        return self.reg.predict(X)
+
 # --- Adapter Factory ---
 
 def get_adapter_instance(method_name, reg, domain_train_X, domain_train_y):
@@ -79,6 +94,7 @@ def get_adapter_instance(method_name, reg, domain_train_X, domain_train_y):
         "KLIEP": KLIEP,
         "CombinedDataAdapter": CombinedDataAdapter,
         "ContinuedTrainingAdapter": ContinuedTrainingAdapter,
+        "TargetOnly": TargetOnlyDataAdapter,
     }
     AdapterClass = adapter_map.get(method_name)
     if AdapterClass is None:
@@ -159,7 +175,7 @@ def get_args():
     parser.add_argument("--output_path", type=str,
                         default=None,
                         help="CSV output file for evaluation metrics")
-    parser.add_argument("--dataset_name", type=str, default="hppb",
+    parser.add_argument("--dataset_name", type=str, default="hlm",
                         help="Dataset name used to load configuration (e.g., solubility, hppb, hlm)")
     parser.add_argument("--data_folder", type=str, default="/home/ubuntu/bio2d_public/data/",
                         help="Data folder path")
@@ -172,11 +188,6 @@ def get_args():
                         help="Number of scaffold splits to generate from the domain dataset")
     parser.add_argument("--num_processes", type=int, default=16,
                         help="Number of processes for parallel training")
-    # Adapter-specific hyperparameters.
-    parser.add_argument("--adapter_n_estimators", type=int, default=10,
-                        help="Number of estimators for the adaptation method")
-    parser.add_argument("--adapter_random_state", type=int, default=0,
-                        help="Random seed for the adaptation method")
     # For ContinuedTrainingAdapter: additional iterations for domain training.
     parser.add_argument("--additional_iterations", type=int, default=1000,
                         help="Additional iterations when continuing training on domain data")
