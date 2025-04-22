@@ -84,7 +84,7 @@ python bin/train_and_evaluate_model.py \
 
 ### Script: `domain_adaptation.py`
 
-This script performs domain adaptation experiments by training a model on source data and adapting it to a different domain. Besides standard methods (e.g., `TrAdaBoostR2`, `KMM`, `KLIEP`), it offers **CombinedDataAdapter** and **ContinuedTrainingAdapter**.
+This script performs domain adaptation experiments by training a model on source data and adapting it to a different domain. Besides standard methods (e.g., `TrAdaBoostR2`, `KMM`, `KLIEP`), it offers **CombinedDataAdapter**, **ContinuedTrainingAdapter** and **TargetOnly**.
 
 #### Command-Line Arguments
 
