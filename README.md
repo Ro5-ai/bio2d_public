@@ -91,7 +91,7 @@ This script performs domain adaptation experiments by training a model on source
 - **`--output_path`**: Full path for the output CSV file. If not provided, a default name is generated based on key parameters.
 - **`--output_folder`**: Folder in which to save the output CSV if `--output_path` is not specified. *(Default: `./output`)*
 - **`--dataset_name`**: Dataset name used to load configuration (e.g., `solubility`, `hppb`, `hlm`).
-- **`--adaptation_method`**: The adaptation method. *Options:* `TrAdaBoostR2`, `TwoStageTrAdaBoostR2`, `NearestNeighborsWeighting`, `KMM`, `KLIEP`, `CombinedDataAdapter`, `ContinuedTrainingAdapter`
+- **`--adaptation_method`**: The adaptation method. *Options:* `TrAdaBoostR2`, `TwoStageTrAdaBoostR2`, `NearestNeighborsWeighting`, `KMM`, `KLIEP`, `CombinedDataAdapter`, `ContinuedTrainingAdapter`, `TargetOnly`
 - **`--num_fractions`**: Number of fractions to divide the domain training set. *(Default: `10`)*
 - **`--num_scaffold_splits`**: Number of scaffold splits to generate. *(Default: `5`)*
 - **`--num_processes`**: Number of processes for parallel training. *(Default: `4`)*
