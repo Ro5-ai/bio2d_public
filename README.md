@@ -88,8 +88,6 @@ This script performs domain adaptation experiments by training a model on source
 
 #### Command-Line Arguments
 
-- **`--source_data_path`**: Path to the source dataset pickle file. *(Default: `/home/ubuntu/bio2d_public/data/clean_nih_sol_fp.pkl`)*
-- **`--domain_data_path`**: Path to the domain dataset pickle file. *(Default: `/home/ubuntu/bio2d_public/data/clean_biogen_sol_fp.pkl`)*
 - **`--output_path`**: Full path for the output CSV file. If not provided, a default name is generated based on key parameters.
 - **`--output_folder`**: Folder in which to save the output CSV if `--output_path` is not specified. *(Default: `./output`)*
 - **`--dataset_name`**: Dataset name used to load configuration (e.g., `solubility`, `hppb`, `hlm`).
@@ -145,7 +143,3 @@ This runs the domain adaptation experiment on the `hppb` dataset using the `Cont
   - *Regression:* Pearson, Spearman, RMSE, MAE, normalized RMSE.
 - **Reproducibility:** Random states and seeds are configurable for reproducibility.
 
----
-
-Happy benchmarking!
-')
