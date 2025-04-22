@@ -45,8 +45,6 @@ class ContinuedTrainingAdapter:
     """
     def __init__(self, reg, **kwargs):
         self.reg = reg
-        # Additional iterations for domain-specific training.
-        self.additional_iterations = kwargs.get("additional_iterations", 1000)
 
     def fit(self, source_X, source_y, Xt, yt):
         # First train on source data.
@@ -57,7 +55,6 @@ class ContinuedTrainingAdapter:
             Xt, yt,
             init_model=self.reg.model,
             verbose=False,
-            iterations=self.additional_iterations
         )
         return self
 
@@ -140,13 +137,23 @@ def train_fraction(task, dataset_config, adaptation_method, num_fractions):
     source_X = scaler.fit_transform(source_features)
     source_y = np.array(source_data[source_target_col].tolist())
 
-    # Instantiate the regression model using dataset-specific parameters.
-    reg = CatBoostSklearnRegressor(dataset_config.get("dataset_name"), **dataset_config.get("catboost_params", {}))
-
-    # Create adapter instance based on the selected adaptation method.
-    adapter = get_adapter_instance(adaptation_method, reg, domain_train_X, domain_train_y)
     # Fit the adapter using source data and domain training data.
-    adapter.fit(source_X, source_y, Xt=domain_train_X, yt=domain_train_y)
+    if adaptation_method == "TargetOnly":
+        # Train using only target data.
+        reg = CatBoostSklearnRegressor(dataset_config.get("dataset_name"),
+                                       **dataset_config.get("catboost_params", {}))
+        adapter = get_adapter_instance("TargetOnly", reg, domain_train_X, domain_train_y)
+        adapter.fit(domain_train_X, domain_train_y)
+    else:
+        # Refit scaler on entire source data.
+        source_features = source_data[features_col].tolist()
+        source_X = scaler.fit_transform(source_features)
+        source_y = np.array(source_data[source_target_col].tolist())
+        reg = CatBoostSklearnRegressor(dataset_config.get("dataset_name"),
+                                       **dataset_config.get("catboost_params", {}))
+        adapter = get_adapter_instance(adaptation_method, reg, domain_train_X, domain_train_y)
+        adapter.fit(source_X, source_y, Xt=domain_train_X, yt=domain_train_y)
+
 
     # Prepare the test data.
     test_features = domain_test[features_col].tolist()
